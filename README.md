@@ -1,126 +1,294 @@
-# Email Sender with Drive Links
+# SirMails - Professional Mass Mailer
 
-A web application that allows you to send emails with drive links to multiple recipients. Features an Excel-like interface with inline editing capabilities.
+A production-ready, feature-rich mass email application with drive links and document attachment support. Optimized for deployment on Render.com with comprehensive error handling and monitoring.
 
-## Features
+## ✨ Features
 
-- ✅ Add recipient email addresses manually
-- ✅ Add multiple drive links per recipient
-- ✅ Excel-like table interface
-- ✅ Inline editing of emails and drive links
-- ✅ Email validation (ensures proper format with single @ symbol)
-- ✅ Drive link validation
-- ✅ Real-time status messages showing success/errors
-- ✅ Confirmation before sending
-- ✅ Individual send status for each recipient
+### Core Capabilities
 
-## Prerequisites
+- 📧 **Parallel Email Sending** - Send to multiple recipients simultaneously (up to 100/batch)
+- 🔗 **Drive Links Support** - Share Google Drive/OneDrive links with recipients
+- 📎 **File Attachments** - Attach documents directly (up to 25MB total)
+- 🎯 **Smart Validation** - Email and URL validation with helpful error messages
+- 🔄 **Auto-Retry Logic** - 3 automatic retries with exponential backoff on failures
+- 📊 **Excel-like Interface** - Inline editing with real-time validation
+- 🎨 **Real-time Status** - Live updates for each email sent
+- 🛡️ **Production-Ready** - Error handling, logging, graceful shutdown
 
-- Node.js (version 14 or higher)
-- A Gmail account (or other email service)
-- Gmail App Password (if using Gmail)
+### Technical Features
 
-## Installation
+- ⚡ Connection pooling for optimal performance
+- 🔐 Secure TLS/SSL email transmission
+- 💾 Memory-efficient file handling
+- 🌐 CORS support for cross-origin requests
+- 📈 Health monitoring endpoints
+- 🔍 Configuration verification tools
+- 📱 Responsive design
+- 🚀 Zero-downtime deployment support
 
-1. **Navigate to the project directory:**
+## 📋 Prerequisites
+
+- **Node.js** 18.0.0 or higher
+- **NPM** 9.0.0 or higher
+- **Gmail Account** with 2-Step Verification enabled
+- **Gmail App Password** (for email sending)
+
+## 🚀 Quick Start
+
+### Local Development
+
+1. **Clone and Install:**
 
    ```bash
-   cd "c:\ABBA CONTRIBUTION\email-sender"
-   ```
-
-2. **Install dependencies:**
-
-   ```bash
+   cd "c:\ABBA CONTRIBUTION"
    npm install
    ```
 
-3. **Configure email settings:**
-   - Copy `.env.example` to `.env`:
-     ```bash
-     cp .env.example .env
-     ```
-   - Edit `.env` and add your email credentials:
-     ```
-     EMAIL_SERVICE=gmail
-     EMAIL_USER=your-email@gmail.com
-     EMAIL_PASSWORD=your-app-password
-     ```
+2. **Configure Environment:**
 
-### Getting Gmail App Password
+   ```bash
+   # Copy the example file
+   cp .env.example .env
 
-1. Go to your Google Account: https://myaccount.google.com/
-2. Select **Security**
-3. Under "Signing in to Google," select **2-Step Verification** (you need to enable this first)
-4. At the bottom, select **App passwords**
-5. Select **Mail** and your device
-6. Copy the generated 16-character password
-7. Use this password in your `.env` file
+   # Edit .env with your credentials
+   ```
 
-## Usage
+3. **Verify Setup:**
 
-1. **Start the server:**
+   ```bash
+   npm run verify
+   ```
+
+4. **Start Server:**
 
    ```bash
    npm start
+   # or for development with auto-reload:
+   npm run dev
    ```
 
-2. **Open your browser:**
-   Navigate to: http://localhost:3000
+5. **Open Application:**
+   ```
+   http://localhost:3000
+   ```
 
-3. **Using the application:**
-   - Enter an email address and click "Add Email"
-   - Enter drive links (one per line) and click "Add Drive Links"
-   - The data will appear in the table below
-   - Click any email or drive link cell to edit it
-   - Review the data in the table
-   - Click "Send Emails" to send all emails
-   - Check the Status Messages window for results
+### Deploy to Render.com
 
-## Features in Detail
+See **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** for complete deployment instructions.
 
-### Email Validation
+## 📧 Gmail App Password Setup
 
-- Must contain exactly one @ symbol
-- Follows RFC 5322 email standards
-- Invalid emails are highlighted in red
-- Cannot send emails with invalid addresses
+### Step-by-Step Guide:
 
-### Drive Links
+1. **Enable 2-Step Verification:**
+   - Visit: https://myaccount.google.com/security
+   - Click "2-Step Verification"
+   - Follow the setup wizard
 
-- Can add multiple links per recipient
-- Links are validated as proper URLs
-- Each link must be on a separate line
-- Links can be edited directly in the table
+2. **Generate App Password:**
+   - After enabling 2-Step, visit: https://myaccount.google.com/apppasswords
+   - Select "Mail" as the app
+   - Select "Other (Custom name)" as device, type "SirMails"
+   - Click "Generate"
+   - **Copy the 16-character password** (remove spaces!)
 
-### Excel-like Interface
+3. **Configure in .env:**
+   ```env
+   EMAIL_USER=your-email@gmail.com
+   EMAIL_PASSWORD=abcd efgh ijkl mnop   # Your 16-char password
+   ```
 
-- Green header like Excel
-- Hover effects on rows
-- Click-to-edit cells
-- Inline editing with Enter to save, Escape to cancel
+⚠️ **Important:** Use the App Password, NOT your regular Gmail password!
 
-### Status Window
+## 📖 Usage Guide
 
-- Shows all operations in real-time
-- Color-coded messages:
-  - Blue: Information
-  - Green: Success
-  - Red: Error
-  - Yellow: Warning
-- Timestamps for each message
-- Auto-scrolls to latest message
+### 1. Start the Application
 
-## Troubleshooting
+```bash
+npm start
+```
 
-### "Network error" when sending emails
+Server will start on `http://localhost:3000`
 
-- Make sure the server is running (`npm start`)
-- Check if you can access http://localhost:3000
+### 2. Add Recipients
 
-### "Email transporter error"
+- Enter email address in the input field
+- Click "Add Email"
+- Email will be validated automatically
+- Click on any email to edit inline
 
-- Verify your `.env` file has correct credentials
-- For Gmail, make sure you're using an App Password, not your regular password
+### 3. Add Drive Links
+
+- Click "+ Add Drive Link" to create input fields  
+- Paste your Google Drive/OneDrive links
+- Click "Submit Links"
+- Links will be added to ALL recipients
+- Click on links in table to edit
+
+### 4. Add File Attachments (Optional)
+
+- Click "Choose Files" to select documents
+- Supported: PDF, DOC, XLS, PPT, images, ZIP
+- Maximum 25MB total per batch
+- Files will be attached to ALL recipients
+
+### 5. Send Emails
+
+- Review your recipients and content
+- Click "Send Emails"
+- Monitor progress in Status Messages section
+- Each email shows ✅ (success) or ❌ (failed)
+## 🔧 Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm start` | Start production server |
+| `npm run dev` | Start development server with auto-reload |
+| `npm run verify` | Verify project setup and configuration |
+| `npm run preflight` | Run pre-deployment checks |
+| `npm test` | Run all verification tests |
+
+## 🌐 API Endpoints
+
+### Public Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | Main web application |
+| `/health` | GET | Server health status with metrics |
+| `/config-check` | GET | Configuration verification |
+| `/send-emails` | POST | Send emails to recipients |
+
+### Health Check Response
+```json
+{
+  "status": "OK",
+  "timestamp": "2026-01-14T00:57:56.000Z",
+  "uptime": 123,
+  "environment": "production",
+  "emailConfigured": true,
+  "emailStatus": "Ready",
+  "memory": {
+    "used": "45 MB",
+    "total": "128 MB"
+  },
+  "nodeVersion": "v18.17.0"
+}
+```
+
+## 🐛 Troubleshooting
+
+### Connection Timeout Errors
+
+**Symptom:** "Connection timeout" when sending emails
+
+**Solutions:**
+1. Verify EMAIL_USER and EMAIL_PASSWORD are correct
+2. Regenerate Gmail App Password
+3. Check your internet connection
+4. Verify Gmail account doesn't have suspicious activity blocks
+
+### Email Service Not Configured
+
+**Symptom:** "Email service not configured" error
+
+**Solutions:**
+1. Check if .env file exists
+2. Verify EMAIL_USER and EMAIL_PASSWORD are set
+3. Restart the server after changing .env
+4. Run `npm run verify` to check configuration
+
+### Authentication Failed
+
+**Symptom:** "Authentication failed" or "Invalid login"
+
+**Solutions:**
+1. **NOT using App Password** - Generate one at https://myaccount.google.com/apppasswords
+2. App Password has spaces - Remove all spaces
+3. 2-Step Verification not enabled - Enable it first
+4. Wrong email address - Double-check EMAIL_USER
+
+### Port Already in Use
+
+**Symptom:** "EADDRINUSE" error
+
+**Solutions:**
+1. Change PORT in .env file
+2. Stop other applications using port 3000
+3. On Windows: `netstat -ano | findstr :3000` then `taskkill /PID <PID> /F`
+
+### Server Won't Start
+
+**Solutions:**
+1. Run `npm install` to ensure dependencies are installed
+2. Check Node.js version: `node --version` (must be 18+)
+3. Run `npm run verify` to identify issues
+4. Check server logs for specific errors
+
+## 📊 Performance Tips
+
+### For Local Development
+- Use `npm run dev` for auto-reload
+- Keep batch size under 50 emails for faster testing
+- Monitor memory usage in /health endpoint
+
+### For Production (Render.com)
+- Free tier: Service spins down after 15 min inactivity
+- First request after spin-down: 30-60 seconds
+- Batch limit: 100 emails per request
+- Large attachments may cause timeouts
+- Use connection pooling (already configured)
+
+## 🔒 Security Best Practices
+
+✅ Never commit .env file to git (.gitignore prevents this)
+✅ Use App Passwords, not regular passwords  
+✅ Rotate App Passwords periodically
+✅ Enable 2-Step Verification on Gmail
+✅ Monitor /health endpoint for unusual activity
+✅ Keep dependencies updated: `npm audit fix`
+
+## 📁 Project Structure
+
+```
+├── server.js              # Main server file
+├── index.html             # Frontend HTML
+├── script.js              # Frontend JavaScript  
+├── styles.css             # Frontend styles
+├── package.json           # Dependencies
+├── .env                   # Environment variables (not in git)
+├── .env.example           # Environment template
+├── .gitignore            # Git ignore rules
+├── render.yaml           # Render.com configuration
+├── verify-setup.js       # Setup verification script
+├── preflight-check.js    # Pre-deployment checks
+├── DEPLOYMENT_GUIDE.md   # Deployment instructions
+└── README.md             # This file
+```
+
+## 🆘 Getting Help
+
+1. **Check Configuration:** Visit `/config-check` endpoint
+2. **Check Health:** Visit `/health` endpoint  
+3. **Run Verification:** `npm run verify`
+4. **Check Logs:** Server logs show detailed error messages
+5. **Documentation:** Read DEPLOYMENT_GUIDE.md
+
+## 📝 License
+
+MIT License - Feel free to use and modify!
+
+## 👨‍💻 Contributing
+
+Contributions welcome! Please ensure:
+- Code passes `npm run verify`
+- All endpoints tested
+- Documentation updated
+- No sensitive data in commits
+
+---
+
+**Made with ❤️ for efficient mass email communication**
 - Enable 2-Step Verification in your Google Account
 
 ### Emails not sending
