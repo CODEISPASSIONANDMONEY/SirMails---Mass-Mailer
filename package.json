@@ -12,7 +12,8 @@
     "dev": "nodemon server.js",
     "verify": "node verify-setup.js",
     "preflight": "node preflight-check.js",
-    "test": "node verify-setup.js && node preflight-check.js"
+    "test": "node verify-setup.js && node preflight-check.js",
+    "test-email": "node test-email-connection.js"
   },
   "keywords": [
     "email",
