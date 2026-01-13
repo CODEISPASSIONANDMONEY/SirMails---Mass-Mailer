@@ -501,7 +501,8 @@ async function sendEmails() {
   addStatusMessage("Starting email send process...", "info");
 
   try {
-    const response = await fetch("http://localhost:3000/send-emails", {
+    // Use relative URL for production, works for both local and deployed
+    const response = await fetch("/send-emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -539,7 +540,7 @@ async function sendEmails() {
     }
   } catch (error) {
     addStatusMessage(
-      `Network error: ${error.message}. Make sure the server is running on port 3000.`,
+      `Network error: ${error.message}. Make sure the server is running.`,
       "error"
     );
   } finally {
