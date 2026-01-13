@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Sender - Drive Links</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>SirMails - Drive Links & Doc Imports</h1>
+
+      <div class="input-section">
+        <div class="input-group">
+          <label for="emailInput">Recipient Email Address:</label>
+          <input
+            type="email"
+            id="emailInput"
+            placeholder="Enter email address"
+          />
+          <button onclick="addEmail()" class="btn-add">Add Email</button>
+        </div>
+
+        <div class="input-group">
+          <label>Drive Links:</label>
+          <div id="driveLinkInputs" class="drive-link-inputs">
+            <!-- Dynamic drive link inputs will be generated here -->
+          </div>
+          <div class="drive-links-actions">
+            <button onclick="addDriveLinkField()" class="btn-secondary">
+              + Add Drive Link
+            </button>
+            <button onclick="submitDriveLinks()" class="btn-add">
+              Submit Links
+            </button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="fileInput">Upload Documents:</label>
+          <input
+            type="file"
+            id="fileInput"
+            multiple
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.zip"
+          />
+          <button onclick="addFiles()" class="btn-add">Add Documents</button>
+          <div id="fileList" class="file-list"></div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <h2>Recipients & Documents</h2>
+        <div class="table-wrapper">
+          <table id="dataTable">
+            <thead>
+              <tr>
+                <th style="width: 50px">#</th>
+                <th style="width: 250px">Email Address</th>
+                <th style="width: 300px">Drive Links</th>
+                <th style="width: 200px">Attachments</th>
+                <th style="width: 100px">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <!-- Data rows will be added here -->
+            </tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="emptyState">
+          No recipients added yet. Add email addresses and drive links above.
+        </div>
+      </div>
+
+      <div class="button-section">
+        <button onclick="sendEmails()" class="btn-send" id="sendButton">
+          Send Emails
+        </button>
+        <button onclick="clearAll()" class="btn-clear">Clear All</button>
+      </div>
+
+      <div class="status-window" id="statusWindow">
+        <h3>Status Messages</h3>
+        <div class="status-content" id="statusContent">
+          <p class="status-info">Ready to send emails...</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
