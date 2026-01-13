@@ -37,6 +37,14 @@ transporter.verify((error, success) => {
 // Send emails endpoint
 app.post("/send-emails", async (req, res) => {
   try {
+    // Check if email credentials are configured
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+      return res.status(500).json({
+        error:
+          "Email credentials not configured. Please set EMAIL_USER and EMAIL_PASSWORD in environment variables.",
+      });
+    }
+
     const { recipients } = req.body;
 
     if (!recipients || recipients.length === 0) {
@@ -47,8 +55,8 @@ app.post("/send-emails", async (req, res) => {
     let successCount = 0;
     let failedCount = 0;
 
-    // Send emails sequentially
-    for (const recipient of recipients) {
+    // Send emails in parallel for better performance
+    const emailPromises = recipients.map(async (recipient) => {
       try {
         // Create drive links HTML
         let driveLinksHtml = "";
@@ -109,27 +117,45 @@ app.post("/send-emails", async (req, res) => {
 
         await transporter.sendMail(mailOptions);
 
-        results.push({
+        console.log(`Email sent successfully to: ${recipient.email}`);
+        return {
           email: recipient.email,
           success: true,
-        });
-        successCount++;
-
-        console.log(`Email sent successfully to: ${recipient.email}`);
+        };
       } catch (error) {
-        results.push({
-          email: recipient.email,
-          success: false,
-          error: error.message,
-        });
-        failedCount++;
-
         console.error(
           `Failed to send email to ${recipient.email}:`,
           error.message
         );
+        return {
+          email: recipient.email,
+          success: false,
+          error: error.message,
+        };
       }
-    }
+    });
+
+    // Wait for all emails to complete
+    const emailResults = await Promise.allSettled(emailPromises);
+    
+    // Process results
+    emailResults.forEach((result) => {
+      if (result.status === 'fulfilled') {
+        results.push(result.value);
+        if (result.value.success) {
+          successCount++;
+        } else {
+          failedCount++;
+        }
+      } else {
+        failedCount++;
+        results.push({
+          email: 'unknown',
+          success: false,
+          error: result.reason?.message || 'Unknown error'
+        });
+      }
+    });
 
     res.json({
       success: true,

@@ -132,13 +132,16 @@ function addDriveLinkField() {
   const input = document.createElement("input");
   input.type = "url";
   input.className = "drive-link-input";
-  input.placeholder = "Paste drive link here";
+  input.placeholder =
+    "Paste drive link here (e.g., https://drive.google.com/...)";
 
   const removeBtn = document.createElement("button");
   removeBtn.className = "btn-remove-link";
   removeBtn.innerHTML = "×";
+  removeBtn.title = "Remove this link field";
   removeBtn.onclick = function () {
     inputWrapper.remove();
+    addStatusMessage("Removed drive link field", "info");
   };
 
   inputWrapper.appendChild(input);
@@ -153,7 +156,7 @@ function submitDriveLinks() {
 
   if (inputs.length === 0) {
     addStatusMessage(
-      "Please add at least one drive link field first",
+      "Please add at least one drive link field first (click + Add Drive Link)",
       "warning"
     );
     return;
@@ -164,7 +167,10 @@ function submitDriveLinks() {
     .filter((l) => l);
 
   if (links.length === 0) {
-    addStatusMessage("Please enter at least one drive link", "warning");
+    addStatusMessage(
+      "Please enter at least one drive link in the input fields",
+      "warning"
+    );
     return;
   }
 
@@ -172,14 +178,17 @@ function submitDriveLinks() {
   const invalidLinks = links.filter((link) => !validateDriveLink(link));
   if (invalidLinks.length > 0) {
     addStatusMessage(
-      `Invalid drive links found: ${invalidLinks.join(", ")}`,
+      `Invalid URL format. Please enter valid URLs starting with http:// or https://`,
       "error"
     );
     return;
   }
 
   if (recipients.length === 0) {
-    addStatusMessage("Please add at least one email address first", "warning");
+    addStatusMessage(
+      "⚠️ Please add at least one email address first before submitting drive links",
+      "warning"
+    );
     return;
   }
 
@@ -194,7 +203,7 @@ function submitDriveLinks() {
 
   renderTable();
   addStatusMessage(
-    `Added ${links.length} drive link(s) to ${recipients.length} recipient(s)`,
+    `✓ Added ${links.length} drive link(s) to ${recipients.length} recipient(s)`,
     "success"
   );
 }
@@ -514,12 +523,12 @@ async function sendEmails() {
 
     if (response.ok) {
       addStatusMessage(
-        `Successfully sent ${result.successCount} email(s)`,
+        `✓ Successfully sent ${result.successCount} email(s)!`,
         "success"
       );
       if (result.failedCount > 0) {
         addStatusMessage(
-          `Failed to send ${result.failedCount} email(s)`,
+          `⚠️ Failed to send ${result.failedCount} email(s)`,
           "error"
         );
       }
@@ -536,13 +545,20 @@ async function sendEmails() {
         }
       });
     } else {
-      addStatusMessage(`Error: ${result.error}`, "error");
+      addStatusMessage(`❌ Error: ${result.error}`, "error");
+      if (result.error && result.error.includes("Missing credentials")) {
+        addStatusMessage(
+          "Please configure email credentials in Render environment variables",
+          "error"
+        );
+      }
     }
   } catch (error) {
     addStatusMessage(
-      `Network error: ${error.message}. Make sure the server is running.`,
+      `❌ Network error: ${error.message}. Server connection failed.`,
       "error"
     );
+    console.error("Fetch error:", error);
   } finally {
     sendButton.disabled = false;
     sendButton.textContent = "Send Emails";
