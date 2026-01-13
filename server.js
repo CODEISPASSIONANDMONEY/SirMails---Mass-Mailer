@@ -14,14 +14,25 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.static(__dirname)); // Serve static files from current directory
 
-// Configure email transporter
-// You'll need to set up your email credentials in .env file
+// Configure email transporter with proper SMTP settings
 const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE || "gmail", // e.g., 'gmail', 'outlook'
+  host: process.env.EMAIL_SERVICE === "gmail" ? "smtp.gmail.com" : process.env.SMTP_HOST || "smtp.gmail.com",
+  port: parseInt(process.env.SMTP_PORT) || 587,
+  secure: false, // true for 465, false for other ports
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
   },
+  tls: {
+    rejectUnauthorized: false,
+    ciphers: 'SSLv3'
+  },
+  connectionTimeout: 10000, // 10 seconds
+  greetingTimeout: 10000,
+  socketTimeout: 30000, // 30 seconds
+  pool: true, // use pooled connections
+  maxConnections: 5,
+  maxMessages: 10,
 });
 
 // Verify transporter configuration
@@ -115,32 +126,56 @@ app.post("/send-emails", async (req, res) => {
           attachments: attachments,
         };
 
-        await transporter.sendMail(mailOptions);
+        // Retry logic for connection timeout
+        let lastError;
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          try {
+            await transporter.sendMail(mailOptions);
+            console.log(`Email sent successfully to: ${recipient.email}`);
+            return {
+              email: recipient.email,
+              success: true,
+            };
+          } catch (err) {
+            lastError = err;
+            console.log(`Attempt ${attempt} failed for ${recipient.email}: ${err.message}`);
+            if (attempt < 3) {
+              // Wait before retry (exponential backoff)
+              await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+            }
+          }
+        }
 
-        console.log(`Email sent successfully to: ${recipient.email}`);
-        return {
-          email: recipient.email,
-          success: true,
-        };
+        // All retries failed
+        throw lastError;
       } catch (error) {
         console.error(
-          `Failed to send email to ${recipient.email}:`,
+          `Failed to send email to ${recipient.email} after 3 attempts:`,
           error.message
         );
+        
+        // Provide helpful error message
+        let errorMsg = error.message;
+        if (error.message.includes('timeout')) {
+          errorMsg = 'Connection timeout. Check your email credentials and network settings.';
+        } else if (error.message.includes('authentication') || error.message.includes('Invalid login')) {
+          errorMsg = 'Authentication failed. Check EMAIL_USER and EMAIL_PASSWORD in environment variables.';
+        }
+        
         return {
           email: recipient.email,
           success: false,
-          error: error.message,
+          error: errorMsg,
         };
       }
     });
 
     // Wait for all emails to complete
     const emailResults = await Promise.allSettled(emailPromises);
-    
+
     // Process results
     emailResults.forEach((result) => {
-      if (result.status === 'fulfilled') {
+      if (result.status === "fulfilled") {
         results.push(result.value);
         if (result.value.success) {
           successCount++;
@@ -150,9 +185,9 @@ app.post("/send-emails", async (req, res) => {
       } else {
         failedCount++;
         results.push({
-          email: 'unknown',
+          email: "unknown",
           success: false,
-          error: result.reason?.message || 'Unknown error'
+          error: result.reason?.message || "Unknown error",
         });
       }
     });
