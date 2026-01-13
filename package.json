@@ -4,11 +4,15 @@
   "description": "Email sender application with drive links support",
   "main": "server.js",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "verify": "node verify-setup.js",
+    "preflight": "node preflight-check.js",
+    "test": "node verify-setup.js && node preflight-check.js"
   },
   "keywords": [
     "email",
