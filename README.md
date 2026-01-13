@@ -81,11 +81,13 @@ See **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** for complete deployment instr
 ### Step-by-Step Guide:
 
 1. **Enable 2-Step Verification:**
+
    - Visit: https://myaccount.google.com/security
    - Click "2-Step Verification"
    - Follow the setup wizard
 
 2. **Generate App Password:**
+
    - After enabling 2-Step, visit: https://myaccount.google.com/apppasswords
    - Select "Mail" as the app
    - Select "Other (Custom name)" as device, type "SirMails"
@@ -119,7 +121,7 @@ Server will start on `http://localhost:3000`
 
 ### 3. Add Drive Links
 
-- Click "+ Add Drive Link" to create input fields  
+- Click "+ Add Drive Link" to create input fields
 - Paste your Google Drive/OneDrive links
 - Click "Submit Links"
 - Links will be added to ALL recipients
@@ -138,28 +140,30 @@ Server will start on `http://localhost:3000`
 - Click "Send Emails"
 - Monitor progress in Status Messages section
 - Each email shows ✅ (success) or ❌ (failed)
+
 ## 🔧 Available Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm start` | Start production server |
-| `npm run dev` | Start development server with auto-reload |
-| `npm run verify` | Verify project setup and configuration |
-| `npm run preflight` | Run pre-deployment checks |
-| `npm test` | Run all verification tests |
+| Command             | Description                               |
+| ------------------- | ----------------------------------------- |
+| `npm start`         | Start production server                   |
+| `npm run dev`       | Start development server with auto-reload |
+| `npm run verify`    | Verify project setup and configuration    |
+| `npm run preflight` | Run pre-deployment checks                 |
+| `npm test`          | Run all verification tests                |
 
 ## 🌐 API Endpoints
 
 ### Public Endpoints
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Main web application |
-| `/health` | GET | Server health status with metrics |
-| `/config-check` | GET | Configuration verification |
-| `/send-emails` | POST | Send emails to recipients |
+| Endpoint        | Method | Description                       |
+| --------------- | ------ | --------------------------------- |
+| `/`             | GET    | Main web application              |
+| `/health`       | GET    | Server health status with metrics |
+| `/config-check` | GET    | Configuration verification        |
+| `/send-emails`  | POST   | Send emails to recipients         |
 
 ### Health Check Response
+
 ```json
 {
   "status": "OK",
@@ -183,6 +187,7 @@ Server will start on `http://localhost:3000`
 **Symptom:** "Connection timeout" when sending emails
 
 **Solutions:**
+
 1. Verify EMAIL_USER and EMAIL_PASSWORD are correct
 2. Regenerate Gmail App Password
 3. Check your internet connection
@@ -193,6 +198,7 @@ Server will start on `http://localhost:3000`
 **Symptom:** "Email service not configured" error
 
 **Solutions:**
+
 1. Check if .env file exists
 2. Verify EMAIL_USER and EMAIL_PASSWORD are set
 3. Restart the server after changing .env
@@ -203,6 +209,7 @@ Server will start on `http://localhost:3000`
 **Symptom:** "Authentication failed" or "Invalid login"
 
 **Solutions:**
+
 1. **NOT using App Password** - Generate one at https://myaccount.google.com/apppasswords
 2. App Password has spaces - Remove all spaces
 3. 2-Step Verification not enabled - Enable it first
@@ -213,6 +220,7 @@ Server will start on `http://localhost:3000`
 **Symptom:** "EADDRINUSE" error
 
 **Solutions:**
+
 1. Change PORT in .env file
 2. Stop other applications using port 3000
 3. On Windows: `netstat -ano | findstr :3000` then `taskkill /PID <PID> /F`
@@ -220,6 +228,7 @@ Server will start on `http://localhost:3000`
 ### Server Won't Start
 
 **Solutions:**
+
 1. Run `npm install` to ensure dependencies are installed
 2. Check Node.js version: `node --version` (must be 18+)
 3. Run `npm run verify` to identify issues
@@ -228,11 +237,13 @@ Server will start on `http://localhost:3000`
 ## 📊 Performance Tips
 
 ### For Local Development
+
 - Use `npm run dev` for auto-reload
 - Keep batch size under 50 emails for faster testing
 - Monitor memory usage in /health endpoint
 
 ### For Production (Render.com)
+
 - Free tier: Service spins down after 15 min inactivity
 - First request after spin-down: 30-60 seconds
 - Batch limit: 100 emails per request
@@ -253,7 +264,7 @@ Server will start on `http://localhost:3000`
 ```
 ├── server.js              # Main server file
 ├── index.html             # Frontend HTML
-├── script.js              # Frontend JavaScript  
+├── script.js              # Frontend JavaScript
 ├── styles.css             # Frontend styles
 ├── package.json           # Dependencies
 ├── .env                   # Environment variables (not in git)
@@ -269,7 +280,7 @@ Server will start on `http://localhost:3000`
 ## 🆘 Getting Help
 
 1. **Check Configuration:** Visit `/config-check` endpoint
-2. **Check Health:** Visit `/health` endpoint  
+2. **Check Health:** Visit `/health` endpoint
 3. **Run Verification:** `npm run verify`
 4. **Check Logs:** Server logs show detailed error messages
 5. **Documentation:** Read DEPLOYMENT_GUIDE.md
@@ -281,6 +292,7 @@ MIT License - Feel free to use and modify!
 ## 👨‍💻 Contributing
 
 Contributions welcome! Please ensure:
+
 - Code passes `npm run verify`
 - All endpoints tested
 - Documentation updated
@@ -289,6 +301,7 @@ Contributions welcome! Please ensure:
 ---
 
 **Made with ❤️ for efficient mass email communication**
+
 - Enable 2-Step Verification in your Google Account
 
 ### Emails not sending
